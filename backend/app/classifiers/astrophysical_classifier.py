@@ -50,13 +50,21 @@ class AstrophysicalClassifier:
         temp_score = temp_res.score if temp_res else 0.0
         is_transient = temp_res.metrics.get("is_transient_flare_profile", False) if temp_res else False
 
-        art_prob = vetting_audit.overall_artifact_probability / 100.0
+        if hasattr(vetting_audit, "overall_artifact_probability"):
+            art_prob = float(vetting_audit.overall_artifact_probability) / 100.0
+            psf_status = getattr(vetting_audit, "psf_consistency", "consistent_stellar_profile")
+        elif isinstance(vetting_audit, dict):
+            art_prob = float(vetting_audit.get("overall_artifact_probability", 3.5)) / 100.0
+            psf_status = vetting_audit.get("psf_consistency", "consistent_stellar_profile")
+        else:
+            art_prob = 0.035
+            psf_status = "consistent_stellar_profile"
 
         # Unnormalized log-evidence (priors + likelihoods)
         scores = {}
 
         # 1. Artifact hypothesis
-        if art_prob > 0.50 or vetting_audit.psf_consistency == "sub_diffraction_artifact":
+        if art_prob > 0.50 or psf_status == "sub_diffraction_artifact":
             scores["INSTRUMENTAL_ARTIFACT"] = 12.0 * art_prob + 4.0
         else:
             scores["INSTRUMENTAL_ARTIFACT"] = 0.5 + 2.0 * art_prob

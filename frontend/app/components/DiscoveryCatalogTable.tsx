@@ -179,7 +179,7 @@ export default function DiscoveryCatalogTable({
                     </span>
                   </td>
                   <td className="p-2.5 text-cyan-300">
-                    {item.motion_arcsec.toFixed(2)}"
+                    {item.motion_arcsec.toFixed(2)}&quot;
                   </td>
                   <td className="p-2.5 text-cyan-300">
                     {item.flux_variability_pct.toFixed(1)}%

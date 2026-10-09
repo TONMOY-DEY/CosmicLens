@@ -111,7 +111,7 @@ export default function AnomalyInjectorModal({
           {anomalyType === 'moving_asteroid' && (
             <div className="grid grid-cols-2 gap-3 bg-black/30 p-3 rounded-2xl border border-cyan-500/15">
               <div className="flex flex-col gap-1">
-                <label className="text-cyan-300">RA Drift: {raShiftArcsec.toFixed(1)}"</label>
+                <label className="text-cyan-300">RA Drift: {raShiftArcsec.toFixed(1)}&quot;</label>
                 <input
                   type="range"
                   min="5"
@@ -123,7 +123,7 @@ export default function AnomalyInjectorModal({
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-cyan-300">Dec Drift: {decShiftArcsec.toFixed(1)}"</label>
+                <label className="text-cyan-300">Dec Drift: {decShiftArcsec.toFixed(1)}&quot;</label>
                 <input
                   type="range"
                   min="-60"

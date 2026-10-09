@@ -1,6 +1,6 @@
 """Scientific Discovery Passport generator matching Section 5.7 of SKYTRACE AI specification."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 import numpy as np
 
@@ -45,7 +45,7 @@ class PassportService:
         analysis: AnalysisResult,
     ) -> str:
         """Generate a standard 80-character astronomical FITS header card block."""
-        now_utc = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         lines = [
             f"{'SIMPLE  =':>8}{'T':>21} / Standard FITS format",
             f"{'BITPIX  =':>8}{'-64':>21} / IEEE 754 floating point",
@@ -222,7 +222,7 @@ class PassportService:
                 "why_interesting": analysis.why_interesting,
             },
             follow_up_suggestions=analysis.follow_up_suggestions,
-            generated_at=datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            generated_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             limitations=limitations,
             fits_header_card=fits_header,
         )
