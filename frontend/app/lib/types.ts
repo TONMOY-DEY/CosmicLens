@@ -195,3 +195,151 @@ export interface DiscoverySummary {
   quality_caveat: string;
   classification_category?: string;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Extensions for remaining SKYTRACE features (do not rename types above)     */
+/* -------------------------------------------------------------------------- */
+
+export type DataProvenance =
+  | 'SYNTHETIC_DEMO_DATA'
+  | 'REAL_ARCHIVE_DATA'
+  | 'MIXED_DATA';
+
+export type QualityCheckStatus = QualityCheckItem['status'];
+
+export type ScientificPriority = AnalysisResult['scientific_priority'];
+
+export type EvidenceConfidenceTier = EvidenceConfidence['tier'];
+
+export type AnomalyDimension =
+  | 'motion'
+  | 'photometry'
+  | 'spectral'
+  | 'temporal'
+  | 'context';
+
+/** Ranking controls for the candidate table (feature 8). */
+export interface CandidateFilterState {
+  search: string;
+  category: string;
+  min_interestingness: number;
+  confidence_tiers: EvidenceConfidenceTier[];
+  priorities: ScientificPriority[];
+  provenance: DataProvenance | 'all';
+  dominant_dimension: AnomalyDimension | 'all';
+}
+
+export const DEFAULT_CANDIDATE_FILTERS: CandidateFilterState = {
+  search: '',
+  category: 'all',
+  min_interestingness: 0,
+  confidence_tiers: ['LOW', 'MODERATE', 'HIGH', 'INSUFFICIENT DATA'],
+  priorities: ['HIGH', 'MODERATE', 'LOW', 'UNASSESSED'],
+  provenance: 'all',
+  dominant_dimension: 'all',
+};
+
+/**
+ * Schematic epoch frame for Interactive Sky Image Comparison.
+ * Not a calibrated SPHEREx cutout. Always label with DISCLAIMER_TEXT.
+ */
+export interface SkyCutoutSourceMark {
+  id: string;
+  x_frac: number;
+  y_frac: number;
+  flux: number;
+}
+
+export interface SkyCutoutFrame {
+  epoch_id: string;
+  timestamp: string;
+  width_px: number;
+  height_px: number;
+  fov_arcmin: number;
+  data_provenance: DataProvenance;
+  disclaimer: string;
+  is_calibrated_telescope_image: false;
+  notes: string;
+  sources: SkyCutoutSourceMark[];
+}
+
+/**
+ * SPHEREx archive integration interface (feature 11).
+ * Adapters must set is_live_archive=false until a verified IRSA client exists.
+ * Do not invent live product URLs.
+ */
+export type SpherexProductType = 'SPECTRA' | 'CUTOUT' | 'CATALOG' | 'UNKNOWN';
+
+export interface SpherexArchiveQuery {
+  ra_deg: number;
+  dec_deg: number;
+  radius_arcmin: number;
+  release_name: string;
+  product_type: SpherexProductType;
+}
+
+export interface SpherexArchiveHit {
+  product_id: string;
+  data_provenance: DataProvenance;
+  disclaimer: string;
+  ra_deg: number;
+  dec_deg: number;
+  observation_date: string;
+  product_type: SpherexProductType;
+  summary: string;
+  source_url: string | null;
+  is_live_archive: boolean;
+}
+
+export interface SpherexArchiveQueryResult {
+  query: SpherexArchiveQuery;
+  hits: SpherexArchiveHit[];
+  adapter_mode: 'MOCK_ADAPTER' | 'LIVE_UNAVAILABLE';
+  limitations: string[];
+  disclaimer: string;
+}
+
+/** Typed catalog row for the cross-match UI; CatalogCheckResult.matches stays as-is. */
+export interface CatalogMatchRecord {
+  catalog_name: string;
+  catalog_id: string;
+  ra_deg: number;
+  dec_deg: number;
+  separation_arcsec: number;
+  object_type: string | null;
+  notes: string;
+}
+
+export interface CatalogCrossMatchQuery {
+  ra_deg: number;
+  dec_deg: number;
+  search_radius_arcsec: number;
+  catalogs: string[];
+}
+
+export interface CatalogCrossMatchResult {
+  query: CatalogCrossMatchQuery;
+  status: CatalogCheckResult['status'];
+  matches: CatalogMatchRecord[];
+  limitations: string;
+  disclaimer: string;
+  is_live_catalog_query: boolean;
+}
+
+/** Human review workflow (feature 13). Local UI state, not a fake remote API. */
+export type ReviewVerdict = 'UNREVIEWED' | 'KEEP' | 'REJECT' | 'NEEDS_FOLLOW_UP';
+
+export interface ReviewRecord {
+  object_id: string;
+  region_id: string;
+  verdict: ReviewVerdict;
+  reviewer_notes: string;
+  reviewed_at: string | null;
+  interestingness_at_review: number | null;
+  confidence_tier_at_review: EvidenceConfidenceTier | null;
+}
+
+export interface ObjectAnalysisBundle {
+  analysis: AnalysisResult;
+  passport: ScientificDiscoveryPassport;
+}
