@@ -157,10 +157,10 @@ export default function DiscoveryPassportModal({
               <div className="bg-black/30 p-3 rounded-2xl border border-cyan-500/15">
                 <h4 className="text-[11px] uppercase text-cyan-400 font-bold mb-2">Position & Motion</h4>
                 <p className="text-cyan-200">
-                  Total Displacement: <strong className="text-white">{p.position_and_motion.total_motion_arcsec.toFixed(2)}"</strong>
+                  Total Displacement: <strong className="text-white">{p.position_and_motion.total_motion_arcsec.toFixed(2)}&quot;</strong>
                 </p>
                 <p className="text-cyan-200">
-                  Apparent Speed: <strong className="text-white">{p.position_and_motion.apparent_speed_arcsec_yr.toFixed(1)}"/yr</strong>
+                  Apparent Speed: <strong className="text-white">{p.position_and_motion.apparent_speed_arcsec_yr.toFixed(1)}&quot;/yr</strong>
                 </p>
                 <p className="text-cyan-400/70 text-[11px] mt-1">{p.position_and_motion.assessment}</p>
               </div>
@@ -261,7 +261,7 @@ export default function DiscoveryPassportModal({
                 </span>
               </div>
               <p className="text-[11px] text-cyan-400/70 mt-1">
-                Catalogs queried: {p.known_object_cross_check.catalogs_checked.join(', ')} (Search radius: {p.known_object_cross_check.search_radius_arcsec.toFixed(1)}")
+                Catalogs queried: {p.known_object_cross_check.catalogs_checked.join(', ')} (Search radius: {p.known_object_cross_check.search_radius_arcsec.toFixed(1)}&quot;)
               </p>
             </div>
 
@@ -271,7 +271,7 @@ export default function DiscoveryPassportModal({
                 <ul className="space-y-2 text-cyan-200">
                   {p.known_object_cross_check.matches.map((m, idx) => (
                     <li key={idx} className="bg-black/40 p-2 rounded-lg border border-cyan-500/10">
-                      <strong>{m.catalog}:</strong> {m.counterpart_id} (Separation: {m.angular_separation_arcsec}")
+                      <strong>{m.catalog}:</strong> {m.counterpart_id} (Separation: {m.angular_separation_arcsec}&quot;)
                       {m.notes && <p className="text-[11px] text-cyan-400/80 mt-0.5">{m.notes}</p>}
                     </li>
                   ))}
@@ -279,7 +279,7 @@ export default function DiscoveryPassportModal({
               </div>
             ) : (
               <div className="p-4 rounded-2xl bg-black/30 border border-cyan-500/15 text-center text-cyan-400/80">
-                No matching counterparts found within {p.known_object_cross_check.search_radius_arcsec.toFixed(1)}" radius.
+                No matching counterparts found within {p.known_object_cross_check.search_radius_arcsec.toFixed(1)}&quot; radius.
               </div>
             )}
 

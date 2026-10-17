@@ -104,6 +104,14 @@ class SEDPoint(BaseModel):
     spectral_feature: Optional[str] = None
 
 
+class VettingAudit(BaseModel):
+    """Vetting audit summary used for astrophysical classification."""
+    overall_artifact_probability: float = Field(3.5, description="Probability (0-100) of instrumental artifact")
+    measurement_quality_score: float = Field(95.0, description="Quality score (0-100)")
+    psf_consistency: str = Field("consistent_stellar_profile", description="PSF profile consistency status")
+    artifacts_detected: List[Any] = Field(default_factory=list, description="List of detected artifacts")
+
+
 class FalseAlarmInvestigation(BaseModel):
     """Formal False Alarm investigation module."""
     checks: List[QualityCheckItem] = Field(default_factory=list)

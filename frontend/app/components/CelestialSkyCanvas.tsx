@@ -283,7 +283,7 @@ export default function CelestialSkyCanvas({
             <span>RA: {hoveredSource.ra.toFixed(5)}°</span>
             <span>DEC: {hoveredSource.dec.toFixed(5)}°</span>
             <span>FLUX: {hoveredSource.flux.toFixed(1)} μJy</span>
-            <span>PSF FWHM: {hoveredSource.psf_fwhm.toFixed(2)}"</span>
+            <span>PSF FWHM: {hoveredSource.psf_fwhm.toFixed(2)}&quot;</span>
           </div>
           <span className="text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">
             {hoveredSource.type || 'Source'}

@@ -113,8 +113,8 @@ def get_region_epochs(region_id: str) -> Dict[str, Any]:
 @app.get("/api/region/{region_id}/sources")
 def list_region_sources(
     region_id: str,
-    page: int = Query(1, ge=1),
-    limit: int = Query(20, ge=1, le=100),
+    page: int = 1,
+    limit: int = 20,
     type_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     """List and paginate unique sources detected in a region."""
@@ -212,8 +212,8 @@ def get_source_detail(
 @app.get("/api/discoveries", response_model=Dict[str, Any])
 def get_top_discoveries(
     region_id: str = "region_001",
-    limit: int = Query(50, ge=1, le=200),
-    category_filter: Optional[str] = Query(None),
+    limit: int = 50,
+    category_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Scan and rank candidates using transparent interestingness and confidence tiers."""
     region = data_service.get_region(region_id)
@@ -279,7 +279,7 @@ def get_top_discoveries(
                 "quality_caveat": quality_caveat,
             }
 
-            if category_filter and category_filter != "all":
+            if category_filter and isinstance(category_filter, str) and category_filter != "all":
                 cat_upper = category_filter.upper()
                 if cat_upper == "HIGH_PRIORITY" and analysis.scientific_priority != "HIGH":
                     continue
@@ -297,6 +297,7 @@ def get_top_discoveries(
             discoveries.append(summary)
 
     discoveries.sort(key=lambda x: x["interestingness_score"], reverse=True)
+    limit_num = limit if isinstance(limit, int) else 50
 
     return {
         "region_id": region_id,
@@ -304,7 +305,7 @@ def get_top_discoveries(
         "data_provenance": "SYNTHETIC_DEMO_DATA",
         "disclaimer": DISCLAIMER_TEXT,
         "total_evaluated": len(discoveries),
-        "discoveries": discoveries[:limit],
+        "discoveries": discoveries[:limit_num],
     }
 
 
@@ -348,26 +349,42 @@ def analyze_object(
         "region_id": region_id,
         "data_provenance": "SYNTHETIC_DEMO_DATA",
         "disclaimer": DISCLAIMER_TEXT,
-        "analysis": analysis.dict(),
-        "passport": passport.dict(),
+        "analysis": analysis.model_dump() if hasattr(analysis, "model_dump") else analysis.dict(),
+        "passport": passport.model_dump() if hasattr(passport, "model_dump") else passport.dict(),
     }
 
 
 @app.get("/api/passport/{passport_id}")
 def get_passport_by_id(passport_id: str) -> Dict[str, Any]:
     """Retrieve canonical Scientific Discovery Passport."""
-    parts = passport_id.split("-")
-    region_id = "region_001"
-    object_id = parts[-1] if len(parts) > 1 else passport_id
+    target_candidates = [passport_id]
+    if passport_id.startswith("ST-"):
+        # Format is ST-{reg_num:03d}-{object_id}, e.g. ST-001-DEMO-001
+        parts = passport_id.split("-")
+        if len(parts) >= 3:
+            target_candidates.insert(0, "-".join(parts[2:]))
 
-    # Find which region has this object
+    matched_region_id = "region_001"
+    matched_object_id = target_candidates[0]
+    found = False
+
     for r in data_service._regions.values():
         for ep in r["epochs"]:
-            if any(s["id"] == object_id for s in ep["sources"]):
-                region_id = r["id"]
+            for s in ep["sources"]:
+                for cand in target_candidates:
+                    if s["id"] == cand:
+                        matched_region_id = r["id"]
+                        matched_object_id = s["id"]
+                        found = True
+                        break
+                if found:
+                    break
+            if found:
                 break
+        if found:
+            break
 
-    return analyze_object(region_id=region_id, object_id=object_id)["passport"]
+    return analyze_object(region_id=matched_region_id, object_id=matched_object_id)["passport"]
 
 
 @app.get("/api/passport/{region_id}/{object_id}")

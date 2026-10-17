@@ -74,7 +74,7 @@ export default function HomePage() {
       }
     };
     checkBackend();
-  }, []);
+  }, [activeRegionId]);
 
   // 2. Synchronize active region changes
   useEffect(() => {
