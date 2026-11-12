@@ -6,6 +6,19 @@
 export const DISCLAIMER_TEXT = "SIMULATED DEMO DATA — NOT A REAL ASTRONOMICAL DISCOVERY";
 export const ALGORITHM_VERSION = "v1.0.0-robust";
 
+export type PageId =
+  | 'overview'
+  | 'data_center'
+  | 'sky_explorer'
+  | 'object_catalog'
+  | 'change_analysis'
+  | 'anomaly_detection'
+  | 'candidate_explorer'
+  | 'validation_center'
+  | 'evidence_explorer'
+  | 'discovery_passport'
+  | 'settings';
+
 export interface SourceObservation {
   id: string;
   ra: number;
@@ -148,6 +161,7 @@ export interface ScientificDiscoveryPassport {
     evidence_confidence: EvidenceConfidence;
     scientific_priority: string;
     why_interesting: string[];
+    dimensional_scores?: Record<string, number>;
   };
   follow_up_suggestions: string[];
   generated_at: string;
@@ -194,4 +208,139 @@ export interface DiscoverySummary {
   usable_epoch_count: number;
   quality_caveat: string;
   classification_category?: string;
+}
+
+export interface DatasetItem {
+  id: string;
+  name: string;
+  data_provenance: string;
+  disclaimer: string;
+  format: string;
+  file_size_bytes: number;
+  ra_center?: number;
+  dec_center?: number;
+  fov_arcmin?: number;
+  telescope?: string;
+  instrument?: string;
+  date_obs?: string;
+  epoch_count: number;
+  source_count: number;
+  dimensions_status: Record<string, { status: string; reason: string }>;
+  created_at: string;
+}
+
+export interface ComparisonResultData {
+  status: string;
+  region_id: string;
+  region_name: string;
+  source_id: string;
+  data_provenance: string;
+  disclaimer: string;
+  epoch_a_index: number;
+  epoch_b_index: number;
+  total_available_epochs: number;
+  lightcurve: Array<{
+    epoch_index: number;
+    epoch_id: string;
+    timestamp: string;
+    jd: number;
+    wavelength_um: number;
+    flux_ujy: number;
+    flux_err_ujy: number;
+    ra: number;
+    dec: number;
+    flag: string;
+  }>;
+  comparison: {
+    source_id: string;
+    epoch_a_id: string;
+    epoch_b_id: string;
+    delta_time_days: number;
+    position: {
+      status: string;
+      epoch_a_coords: { ra: number; dec: number };
+      epoch_b_coords: { ra: number; dec: number };
+      angular_displacement_arcsec: number;
+      position_uncertainty_arcsec: number;
+      significance_sigma: number;
+      position_angle_deg: number;
+      direction: string;
+      apparent_speed_arcsec_yr: number;
+      is_significant_motion: boolean;
+    };
+    brightness: {
+      status: string;
+      epoch_a_flux_ujy: number;
+      epoch_b_flux_ujy: number;
+      absolute_diff_ujy: number;
+      percentage_change: number | string;
+      delta_magnitude: number | string;
+      flux_significance_sigma: number;
+      is_significant_variability: boolean;
+    };
+    spectral: {
+      status: string;
+      band_a_wavelength_um: number;
+      band_b_wavelength_um: number;
+      sed_epoch_a: Array<{ wavelength_um: number; flux: number; flux_err: number; feature: string }>;
+      sed_epoch_b: Array<{ wavelength_um: number; flux: number; flux_err: number; feature: string }>;
+      residuals: Array<{
+        wavelength_um: number;
+        flux_epoch_a: number;
+        flux_epoch_b: number;
+        residual_delta: number;
+        ratio: number;
+        feature?: string;
+      }>;
+      ice_absorption_candidate: boolean;
+    };
+    morphology: {
+      status: string;
+      psf_fwhm_a_arcsec: number;
+      psf_fwhm_b_arcsec: number;
+      delta_fwhm_arcsec: number;
+      flag_a: string;
+      flag_b: string;
+      quality_state_changed: boolean;
+      is_suspected_artifact: boolean;
+    };
+    summary_narrative: string;
+  };
+}
+
+export interface EvidenceGraphNode {
+  id: string;
+  label: string;
+  type: string;
+  category: string;
+  details: string;
+  status: string;
+}
+
+export interface EvidenceGraphEdge {
+  source: string;
+  target: string;
+  relation: string;
+}
+
+export interface EvidenceGraphData {
+  object_id: string;
+  region_id: string;
+  data_provenance: string;
+  disclaimer: string;
+  graph: {
+    nodes: EvidenceGraphNode[];
+    edges: EvidenceGraphEdge[];
+  };
+  traceability_audit: Array<{
+    dimension: string;
+    algorithm: string;
+    measurements_used: string;
+    applied_threshold: string;
+    residual_uncertainty: string;
+    supporting_evidence: string;
+    validation_verdict: string;
+  }>;
+  narrative: string;
+  confidence_tier: string;
 }

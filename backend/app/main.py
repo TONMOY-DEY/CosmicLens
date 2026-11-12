@@ -24,6 +24,11 @@ from app.services.engine import AnomalyEngine
 from app.services.passport_service import PassportService
 from app.services.data_service import AstronomicalDataService
 from app.services.report_service import ReportService
+from app.api.datasets import router as datasets_router
+from app.api.comparisons import router as comparisons_router
+from app.api.evidence import router as evidence_router
+from app.api.reports import router as reports_router
+from app.api.validation import router as validation_router
 
 app = FastAPI(
     title="SKYTRACE AI / CosmicLens API",
@@ -44,6 +49,12 @@ app.add_middleware(
 data_service = AstronomicalDataService()
 engine = AnomalyEngine()
 detector_registry = DetectorRegistry.get_instance()
+
+app.include_router(datasets_router)
+app.include_router(comparisons_router)
+app.include_router(evidence_router)
+app.include_router(reports_router)
+app.include_router(validation_router)
 
 
 @app.get("/api/health")

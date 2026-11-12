@@ -1,206 +1,209 @@
-# CosmicLens: Explainable AI for Discovering and Understanding Change in the Infrared Sky
+# SKYTRACE AI: An Explainable AI Scientific Discovery Engine for the Changing Infrared Sky
 
-[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-Challenge%20Submission-0B3D91?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/)
-[![Mission](https://img.shields.io/badge/Mission-SPHEREx%20%7C%20JWST%20%7C%20NEOWISE-0ea5e9?style=for-the-badge)](https://spherex.caltech.edu/)
-[![Status](https://img.shields.io/badge/Status-Submission%20Ready%20%7C%20Full%20Production-10b981?style=for-the-badge)]()
+[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-Challenge%202026-0B3D91?style=for-the-badge&logo=nasa)](https://www.spaceappschallenge.org/)
+[![Mission](https://img.shields.io/badge/Mission-NASA%20SPHEREx%200.75--5.0%C2%B5m-0ea5e9?style=for-the-badge)](https://spherex.caltech.edu/)
+[![Status](https://img.shields.io/badge/Status-Production%20Grade%20%7C%20Full%20Stack-10b981?style=for-the-badge)]()
+[![Astropy](https://img.shields.io/badge/Powered%20By-Astropy%20%7C%20FastAPI%20%7C%20Next.js-36d9ff?style=for-the-badge)]()
 
-**CosmicLens** is a submission-ready, production-grade Explainable AI (XAI) discovery platform designed for all-sky time-domain infrared astrophysics, specifically tailored for NASA's **SPHEREx** (Spectro-Photometer for the History of the Universe, Epoch of Reionization, and Ices Explorer) mission, alongside JWST and NEOWISE time-domain surveys.
+**SKYTRACE AI** is a premium, full-stack, scientific discovery and explainable AI platform designed for professional astronomers, research institutions, and citizen scientists to explore repeated observations from NASA's **SPHEREx** (Spectro-Photometer for the History of the Universe, Epoch of Reionization, and Ices Explorer) mission.
 
-Unlike traditional black-box machine learning approaches that output uninterpretable anomaly scores, CosmicLens pairs **multi-dimensional physical detectors** with **transparent statistical reasoning**, **false-alarm vetting against instrumental artifacts**, and **automated NASA Scientific Discovery Passports with standard FITS headers**.
+**Tagline:** *An Explainable AI Scientific Discovery Engine for the Changing Infrared Sky.*
 
----
-
-## 🌟 Key Highlights & Architectural Strengths
-
-### 1. Zero-Friction Extensible Detector Architecture
-Built from the ground up for researchers and teams to integrate new features, new detectors, and increase accuracy effortlessly with zero pipeline friction:
-- **Registry Pattern (`@register_detector`)**: Any developer or astronomer can create a new detector in a standalone file by subclassing `BaseAnomalyDetector` and applying the decorator `@register_detector`.
-- **Dynamic Auto-Discovery**: The pipeline discovers, normalizes weights, and incorporates the new detector dynamically into the API, composite scoring, and UI radar visualizations without modifying any core engine code.
-- **Runtime Weight & Threshold Calibration**: Astronomers and evaluators can adjust detector weights and sensitivity thresholds in real time via the UI **Calibration Studio** or REST API (`POST /api/detectors/weights`).
-
-### 2. Multi-Dimensional Astronomical Detectors
-CosmicLens evaluates celestial sources across 5 fundamental physical dimensions:
-- **Astrometric Proper Motion**: Quantifies sky displacement, proper motion velocity vector ($\text{arcsec/yr}$), and linear orbital trajectory consistency ($\chi^2$) to identify Solar System moving objects (Near-Earth Asteroids, Centaurs, Trojans).
-- **Photometric Flux Variability**: Computes reduced $\chi^2_\nu$ against constant flux, fractional amplitude ($\Delta F / \bar{F}$), Stetson $J$-index, and magnitude swings ($\Delta m$) to detect pulsating variables (Mira, Cepheids) and accretion flares.
-- **Infrared Spectral & SED Analysis**: Analyzes infrared color indices ($[1.1] - [2.5]\,\mu m$), spectral slope $\beta$, and extracts molecular ice absorption signatures (specifically $3.05\,\mu m$ $\text{H}_2\text{O}$ ice and $4.27\,\mu m$ $\text{CO}_2$ ice absorption troughs) across 102 continuous SPHEREx spectrophotometric bands ($0.75 - 5.0\,\mu m$).
-- **Temporal Dynamics**: Evaluates flux time derivatives ($dF/dt$), light curve morphology, and rise/decay asymmetry to isolate explosive transients (supernovae, novae, tidal disruption events).
-- **Contextual Field Departure**: Measures robust MAD (Median Absolute Deviation) $z$-scores against local reference field stars to filter broad survey systematics.
-
-### 3. Vetting & False-Alarm Auditor
-Infrared space telescopes produce non-astrophysical artifacts such as cosmic ray charge deposits, bad pixel spikes, and diffraction spikes. CosmicLens incorporates:
-- **PSF Diffraction Limit Audit**: Compares Point Spread Function FWHM against the telescope's optical diffraction limit. Sub-diffraction spikes ($< 1.0''$) are flagged as cosmic ray hits.
-- **Evidence Confidence Metric**: Dynamically penalizes anomaly scores by the calculated artifact probability, preventing false alarms and prioritizing high-value telescope time.
-
-### 4. Automated NASA Scientific Discovery Passports & FITS Cards
-- Generates official IAU-style source designations (e.g. `SPHEREx J185057.6-053112`).
-- Produces standard 80-character **FITS header cards** directly importable into Astropy, DS9, TOPCAT, or Aladin.
-- Synthesizes actionable follow-up proposals for premier observatories (JWST NIRSpec, Roman Space Telescope, IAU Minor Planet Center).
-
----
-
-## 🚀 Interactive Mission Control Dashboard
-
-The frontend is a futuristic, responsive NASA-grade dashboard:
-- **Interactive Celestial Sky Canvas**: Pan, zoom, celestial coordinates grid (RA/Dec), flux-scaled stellar halos, animated proper motion vector trails across survey passes, and click-to-select interaction on any celestial source.
-- **Sky Time Machine**: Scrub between observation epochs, play/pause automated playback, and control animation speed ($0.5\times, 1.0\times, 2.0\times$).
-- **Multi-Epoch Photometric Light Curve**: Interactive SVG plot with $\pm 1\sigma$ measurement error bars, baseline median reference line, and variability metrics.
-- **102-Band SPHEREx Spectral SED Viewer**: Continuous infrared spectrum ($0.75 - 5.0\,\mu m$) with interactive wavelength cursor and highlighted molecular ice absorption bands.
-- **5-Dimensional Radar / Spider Chart**: Visual breakdown of Astrometry, Photometry, Spectroscopy, Temporal, and Context scores.
-- **Discovery Catalog & Triage Table**: Filter by candidate type (All, High Priority, Moving Asteroids, Variable Stars, Transients, Ice Cores, Artifacts), search, and sort.
-- **Live Extensibility Studio**: Adjust detector weights in real time and watch candidate rankings re-calculate live.
-- **Synthetic Anomaly Injector**: Inject custom moving asteroids or flaring transients into any survey field to benchmark detection capabilities.
-- **Custom Survey Data Ingestion**: Upload or paste multi-epoch survey JSON datasets.
-
----
-
-## 🛠️ Project Architecture
-
-```text
-CosmicLens/
-├── backend/
-│   ├── app/
-│   │   ├── classifiers/
-│   │   │   └── astrophysical_classifier.py  # Probabilistic Bayesian candidate classifier
-│   │   ├── detectors/
-│   │   │   ├── base.py                      # BaseAnomalyDetector ABC & DetectorRegistry
-│   │   │   ├── motion_detector.py           # Astrometric proper motion & trajectory fit
-│   │   │   ├── photometry_detector.py       # Reduced chi-sq & fractional flux variance
-│   │   │   ├── spectral_detector.py         # 102-band SED & 3.05um/4.27um ice absorption
-│   │   │   ├── temporal_detector.py         # Transient derivative & light curve dynamics
-│   │   │   ├── context_detector.py          # Local stellar neighborhood MAD z-scores
-│   │   │   └── artifact_vetter.py           # PSF diffraction limit & cosmic ray auditor
-│   │   ├── models/
-│   │   │   └── schemas.py                   # Pydantic schemas for data integrity
-│   │   ├── services/
-│   │   │   ├── data_service.py              # Survey field provider, ingestion, & injector
-│   │   │   ├── engine.py                    # Orchestrator & explainable AI synthesizer
-│   │   │   └── passport_service.py          # NASA Discovery Passport & FITS card generator
-│   │   ├── anomaly_engine.py                # Backward compatibility layer
-│   │   ├── data_generator.py                # Backward compatibility layer
-│   │   ├── discovery_passport.py            # Backward compatibility layer
-│   │   └── main.py                          # FastAPI RESTful API & OpenAPI documentation
-│   ├── tests/
-│   │   └── test_anomaly_pipeline.py         # Scientific unit test suite
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   │   ├── components/
-│   │   │   ├── AnomalyInjectorModal.tsx     # Synthetic anomaly injection modal
-│   │   │   ├── CalibrationStudioModal.tsx   # Live weight tuning & sensitivity sliders
-│   │   │   ├── CelestialSkyCanvas.tsx       # Interactive 2D pan/zoom sky map & trails
-│   │   │   ├── DataIngestModal.tsx          # Custom survey JSON ingestion modal
-│   │   │   ├── DiscoveryCatalogTable.tsx    # Multi-epoch triage ranking table
-│   │   │   ├── DiscoveryPassportModal.tsx   # Formal NASA Discovery Passport & FITS viewer
-│   │   │   ├── LightCurveViewer.tsx         # Multi-epoch light curve with error bars
-│   │   │   ├── RadarBreakdown.tsx           # 5-axis SVG radar chart & vetting meters
-│   │   │   ├── SpectralSEDViewer.tsx        # 102-channel SPHEREx infrared SED viewer
-│   │   │   └── TimeMachineBar.tsx           # Epoch timeline scrub bar & player
-│   │   ├── lib/
-│   │   │   ├── clientEngine.ts              # Standalone high-fidelity client engine
-│   │   │   └── types.ts                     # TypeScript data interfaces
-│   │   ├── globals.css                      # Futuristic dark-sky visual design
-│   │   ├── layout.tsx
-│   │   └── page.tsx                         # Mission Control master page
-│   ├── package.json
-│   ├── tailwind.config.ts
-│   └── tsconfig.json
-├── docker-compose.yml
-└── README.md
+Core Scientific Discovery Journey:
+```
+NASA SPHEREx Data → Data Processing → Object Identification → Multi-Epoch Comparison → 
+Change Detection → AI Anomaly Analysis → Scientific Validation → Explainable Results → Discovery Passport
 ```
 
 ---
 
-## ⚡ How to Add a New Detector with Zero Drawbacks
+## 🌌 Platform Identity & Premium Space Observatory UI
 
-Adding a new scientific anomaly detector or machine learning model takes under 15 lines of code:
-
-```python
-# backend/app/detectors/polarization_detector.py
-from app.detectors.base import BaseAnomalyDetector, register_detector
-from app.models.schemas import DetectorResult
-
-@register_detector
-class PolarizationDetector(BaseAnomalyDetector):
-    @property
-    def detector_id(self) -> str:
-        return "infrared_polarization"
-
-    @property
-    def name(self) -> str:
-        return "Dust Polarization Degree Detector"
-
-    @property
-    def dimension(self) -> str:
-        return "spectral"
-
-    @property
-    def default_weight(self) -> float:
-        return 0.15
-
-    def calculate(self, epochs, context, config=None) -> DetectorResult:
-        # Your custom astrophysics logic here
-        pol_degree = 0.08  # Example calculation
-        score = min(100.0, pol_degree * 500.0)
-        return DetectorResult(
-            detector_id=self.detector_id,
-            dimension=self.dimension,
-            score=score,
-            is_significant=pol_degree > 0.05,
-            metrics={"polarization_fraction": pol_degree},
-            description=f"Polarization degree: {pol_degree*100:.1f}%",
-        )
-```
-Upon file import, the detector is **automatically registered** in `DetectorRegistry`, exposed in the API, incorporated into composite score weighting, and visualized in the UI with zero code changes elsewhere!
+Built with a specialized space observatory visual design system:
+- **Main Background**: Deep Space Navy (`#050816`)
+- **Secondary Background**: Midnight Blue (`#0B1024`)
+- **Card Background**: Dark Blue Translucent Glassmorphism Surfaces (`#0e1533` / `rgba(11, 16, 36, 0.75)`)
+- **Primary Accent**: Electric Cyan (`#36D9FF`)
+- **Secondary Accent**: Cosmic Violet (`#9274FF`)
+- **Status Indicators**: Soft Emerald (`#10B981`), Warm Amber (`#F59E0B`), Soft Red (`#EF4444`)
 
 ---
 
-## 💻 Quick Start & Running Locally
+## 🏛️ Application Architecture & The 11 Core Workspaces
 
-### 1. Run the Backend API
+The platform features a collapsible sidebar with dedicated workspaces:
 
-```bash
+### 1. Overview Dashboard (`PAGE 1`)
+- Executive welcome hero banner with mission parameters and provenance guardrails.
+- High-level metric cards: Total Datasets, Identified Sources, Total Observations, Anomalies Detected, High-Priority Candidates, Data Quality Index.
+- Interactive visualizations: 5-Dimensional Anomaly Breakdown, Multi-Epoch Observation Cadence, and Triage Priority Pie Distribution.
+- Top interesting candidates table with direct links to full dossiers.
+
+### 2. NASA Data Import Center (`PAGE 2`)
+- Drag-and-drop file ingestion for **FITS**, **CSV**, **ECSV**, and **JSON** datasets.
+- Native **Astropy** FITS header parsing (`astropy.io.fits`, `astropy.wcs.WCS`, `astropy.table.Table`).
+- **8-Step Scientific Import Workflow**:
+  1. *Upload files*
+  2. *Inspect file format*
+  3. *Read metadata*
+  4. *Identify observation time and sky coordinates*
+  5. *Check available measurements and quality information*
+  6. *Validate dataset completeness*
+  7. *Import the dataset into SQLite store*
+  8. *Show import summary & dimension readiness matrix*
+- Inspect raw 80-column FITS header cards directly in the UI. Unsupported dimensions are explicitly marked as `NOT AVAILABLE` (never fabricated).
+
+### 3. Sky Explorer (`PAGE 3`)
+- High-performance interactive 2D Celestial Sky Map with accurate astronomical projection (RA inverted, East left, cosine dec correction).
+- Pan, zoom, center-on-source, and FOV boundary footprint overlay.
+- **Sky Time Machine**: Scrub across observation epochs with automated playback controls ($0.5\times, 1.0\times, 2.0\times, 5.0\times$).
+- Target Dossier side panel displaying J2000 coordinates, flux, PSF FWHM, and proper motion vectors.
+
+### 4. Astronomical Object Catalog (`PAGE 4`)
+- Searchable, filterable, and sortable table of all identified celestial sources.
+- Columns: Object ID, RA, Dec, Observations, Mean Flux, Interestingness, Priority, Data Quality.
+- Multi-source selection tool to choose candidates and jump directly to side-by-side Change Analysis.
+
+### 5. Multi-Epoch Change Analysis (`PAGE 5`)
+- Core two-column **Before vs After** comparative workspace:
+  - **Astrometric Differential**: Previous vs New RA/Dec, angular displacement ($\Delta \theta$ in arcsec), position angle (direction in compass degrees), and proper motion speed ($\text{arcsec/yr}$).
+  - **Photometric Differential**: Absolute difference $\Delta F$ ($\mu\text{Jy}$), percentage variation, delta magnitude $\Delta m$, and interactive multi-epoch light curve with error bars.
+  - **Infrared Spectral Residuals**: SPHEREx 10-band continuum and ice absorption residual plot with automated water ice ($3.05\,\mu m$) and $\text{CO}_2$ ($4.27\,\mu m$) trough diagnostics.
+  - **Morphology Differential**: Point Spread Function Full-Width-at-Half-Maximum ($\Delta \text{FWHM}$) and quality flag state transitions.
+
+### 6. AI Anomaly Detection Workspace (`PAGE 6`)
+- 5 independent statistical and physical dimensions:
+  1. **Motion Anomaly**: Astropy spherical kinematics proper motion detector ($\ge 3.0\sigma$ threshold).
+  2. **Photometric Anomaly**: Median Absolute Deviation (MAD) & Reduced Chi-Squared ($\chi^2_\nu$).
+  3. **Spectral Anomaly**: SPHEREx 102-band infrared color slope and ice absorption trough indices.
+  4. **Temporal Anomaly**: Transient emergence and non-periodic outburst rate evaluation.
+  5. **Context Anomaly**: Local neighborhood spatial outlier isolation.
+- Interactive weight calibration sliders and minimum score sensitivity threshold.
+
+### 7. Candidate Explorer (`PAGE 7`)
+- Triage workspace separating **Scientific Interestingness** (physical novelty) from **Evidence Confidence** (data quality and multi-epoch corroboration).
+- Card Grid and Table views with priority filtering (High, Moderate, Low) and category filtering.
+
+### 8. Dedicated Scientific Validation Center (`PAGE 8`)
+- Rigorous false-alarm vetting:
+  - Signal-to-Noise Ratio ($\text{SNR} > 5.0$) test.
+  - PSF sub-diffraction spike test to eliminate cosmic rays.
+  - Single-epoch glitch vetter (requires $\ge 2$ epochs to corroborate).
+  - Background RMS and nebular contamination test.
+  - Cross-match separation vs beam size check.
+- Four distinct statuses: `PASS`, `CAUTION`, `FAIL`, `UNKNOWN` with full explanatory text.
+
+### 9. Evidence Explorer & Traceability Graph (`PAGE 9`)
+- Interactive 6-tier relationship network:
+  $$\text{Object} \longrightarrow \text{Observations} \longrightarrow \text{Measurements} \longrightarrow \text{Anomalies} \longrightarrow \text{Validation} \longrightarrow \text{Explanation}$$
+- Traceable audit table detailing applied mathematical algorithms, thresholds, and residual uncertainties.
+
+### 10. Explainable AI Reasoner (`PAGE 10`)
+- Deterministic scientific explanation grounded strictly in backend computed metrics (zero LLM hallucinations).
+- Explains why a candidate was flagged, contributing measurements, confidence justification, and recommended follow-up observations (e.g. JWST NIRSpec, Keck spectroscopy, MPC orbit cross-matching).
+
+### 11. Scientific Discovery Passport (`PAGE 11`)
+- Publication-quality scientific report dossier.
+- Complete provenance, astrometric history, light curves, SED profiles, validation matrix, and observer recommendations.
+- **Publication PDF Export**: Powered by backend ReportLab engine, generating formal PDF preprints directly from `/api/reports/pdf/{region_id}/{object_id}`.
+- Native browser print integration (`window.print()`).
+
+### 12. Settings & Calibration Studio
+- Runtime detector weight adjustment and normalization.
+- Sensitivity threshold configuration ($\sigma$ multiplier and variability %).
+- Telemetry monitor for FastAPI Python backend and Astropy engine.
+
+---
+
+## 🔬 Scientific Data Integrity Rules
+
+SKYTRACE AI strictly obeys core astronomical data integrity principles:
+1. **Never invent NASA measurements.**
+2. **Never claim synthetic demo data is real NASA data.**
+3. All demonstration records are prominently labeled: `SIMULATED DEMO DATA — NOT A REAL ASTRONOMICAL DISCOVERY`.
+4. Original uploaded FITS files are parsed genuinely with Astropy and preserved unchanged.
+5. Missing measurements are explicitly marked as `NOT EVALUATED` / `NOT AVAILABLE`.
+6. Scientific Interestingness is rigorously separated from Evidence Confidence.
+7. An anomaly is never claimed to be a confirmed discovery merely because it passed automated quality checks.
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Python 3.12**
+- **FastAPI**: Asynchronous high-performance REST APIs
+- **Astropy**: Authentic FITS parsing, WCS extraction, and celestial coordinate calculations
+- **NumPy & Pandas**: Numerical astrophysics and tabular operations
+- **SciPy & Scikit-learn**: Chi-squared, robust MAD, and outlier detection
+- **ReportLab**: PDF publication generator
+- **SQLite3**: Metadata, dataset catalog, and provenance persistence
+- **pytest**: Automated unit and integration test suite
+
+### Frontend
+- **Next.js 14 (App Router)**
+- **React 18 & TypeScript**
+- **Tailwind CSS**: Custom Space Observatory design system
+- **Recharts**: Responsive scientific charting
+- **Lucide React**: Clean, modern iconography
+- **HTML5 Canvas & SVG**: Custom high-resolution celestial charts
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Python 3.10+ (Python 3.12 recommended)
+- Node.js 18+ and npm
+
+### 2. Backend Setup & Startup
+```powershell
+# Navigate to backend directory
 cd backend
-python -m venv .venv
-# On Windows:
-.venv\Scripts\activate
-# On Linux/macOS:
-# source .venv/bin/activate
 
-pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
+# Run pytest test suite to verify all modules
+pytest tests
+
+# Start FastAPI server on port 8000
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-Interactive OpenAPI documentation will be accessible at: `http://localhost:8000/docs`
 
-### 2. Run the Frontend Dashboard
+The API will be live at `http://127.0.0.1:8000` with interactive OpenAPI docs at `http://127.0.0.1:8000/docs`.
 
-```bash
+### 3. Frontend Setup & Startup
+```powershell
+# In a separate terminal, navigate to frontend directory
 cd frontend
-npm install
+
+# Build optimized production bundle
+npm run build
+
+# Start Next.js development or production server
 npm run dev
 ```
-Open `http://localhost:3000` in your browser.
 
-### 3. Run with Docker Compose
+Open `http://localhost:3000` in your web browser.
 
-```bash
-docker compose up --build
+---
+
+## 🧪 Testing & Verification
+
+Run the comprehensive backend test suite:
+```powershell
+pytest backend/tests
+```
+Output:
+```text
+backend\tests\test_anomaly_pipeline.py .........   [ 64%]
+backend\tests\test_skytrace_v2.py .....            [100%]
+======================== 14 passed in 2.70s ========================
 ```
 
 ---
 
-## 📊 Scientific Test Suite
-
-To run the scientific test suite validating astrometric motion vectors, reduced $\chi^2$ variability tests, ice absorption detection, and artifact vetting:
-
-```bash
-cd backend
-pytest tests/
-```
-
----
-
-## 🪐 NASA Challenge Alignment
-
-- **Challenge**: NASA Space Apps Challenge (SPHEREx / Time-Domain Infrared Astronomy).
-- **Target Science Cases**: Solar System Near-Earth Asteroids, Variable Stars (Mira, Cepheid, YSO), Infrared Transients (Supernovae, Tidal Disruption Events), Interstellar Ices ($\text{H}_2\text{O}$ and $\text{CO}_2$), and False-Alarm Artifact Vetting.
-- **Mission Ready**: End-to-end operational software, no demo mockups, full FITS-compliant export.
+## 📄 License & Attribution
+Developed for the NASA Space Apps Challenge 2026 — "Planet X and SPHEREx."
+All astronomical data schemas follow NASA/IPAC SPHEREx and STScI standards.
